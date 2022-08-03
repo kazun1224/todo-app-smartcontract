@@ -1,8 +1,8 @@
 import type { NextPage } from "next";
 import Web3 from "web3";
 import { AbiItem } from "web3-utils";
-import TodoAppContract from "../build/contracts/TodoApp.json";
-import { TodoApp } from "../types/abi";
+import TodoAppContract from "../../build/contracts/TodoApp.json";
+import { TodoApp } from "../../types/abi";
 
 // プロバイダの設定
 const web3: Web3 = new Web3(
@@ -11,7 +11,7 @@ const web3: Web3 = new Web3(
 
 // コントラクトのアドレス
 // ガナッシュでデプロイしたcontractのaddressを入れる
-const address = "";
+const address = process.env.GANACHE_TODO_APP_CONTRACT_ADDRESS;
 
 // ABI
 // buildで生成されたJSONファイルをインポートする
