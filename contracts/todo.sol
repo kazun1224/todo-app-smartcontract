@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity >=0.4.22 <0.9.0;
 
 contract TodoApp {
     uint num = 0;
@@ -42,8 +42,8 @@ contract TodoApp {
         uint counter = 0;
         for (uint i = 0; i < todoList.length; i++) {
             if (todoToOwner[i] == owner){
-              result[counter] = i;
-              counter++;
+                result[counter] = i;
+                counter++;
         }
     }
     return result;
