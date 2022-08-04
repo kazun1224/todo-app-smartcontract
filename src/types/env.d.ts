@@ -2,6 +2,6 @@
 
 declare namespace NodeJS {
   interface ProcessEnv {
-    readonly GANACHE_TODO_APP_CONTRACT_ADDRESS: string;
+    readonly NEXT_PUBLIC_GANACHE_TODO_APP_CONTRACT_ADDRESS: string;
   }
 }

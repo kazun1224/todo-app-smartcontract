@@ -22,7 +22,7 @@ const web3: Web3 = new Web3(
 // コントラクトのアドレス
 // ガナッシュでデプロイしたcontractのaddressを入れる
 /////////////////////////////////////////////////////////////////////// GANACHE_TODO_APP_CONTRACT_ADDRESSの文字列を入れるとerrorが消える
-const address: string = "";
+const address = process.env.NEXT_PUBLIC_GANACHE_TODO_APP_CONTRACT_ADDRESS;
 
 // ABI
 // buildで生成されたJSONファイルをインポートする
