@@ -20,13 +20,12 @@ const web3: Web3 = new Web3(
 );
 
 // コントラクトのアドレス
-// ガナッシュでデプロイしたcontractのaddressを入れる
+// デプロイしたcontractのaddressを入れる
 /////////////////////////////////////////////////////////////////////// GANACHE_TODO_APP_CONTRACT_ADDRESSの文字列を入れるとerrorが消える
-const address = process.env.NEXT_PUBLIC_GANACHE_TODO_APP_CONTRACT_ADDRESS;
+const address = "";
 
-// ABI
-// buildで生成されたJSONファイルをインポートする
-// JSONファイルからabiを抽出
+// buildで生成されたJSONファイルを任意の名前でインポートする
+// JSONファイルからABIを抽出
 const ABI = TodoAppContract.abi as any as AbiItem;
 
 // コントラクトのインスタンス
@@ -34,7 +33,7 @@ const ABI = TodoAppContract.abi as any as AbiItem;
 const contract = new web3.eth.Contract(ABI, address) as unknown as TodoApp;
 
 const Home: NextPage = () => {
-  const [todos, setTodos] = useState<Value[] | undefined[]>([]);
+  const [todos, setTodos] = useState<Value[]>([]);
 
   // Todoを取得
   useEffect(() => {
@@ -44,14 +43,14 @@ const Home: NextPage = () => {
         .getTodoListByOwner(accounts[0])
         .call();
 
-      // ② resultに格納されている配列を展開して、todos()の引数として渡す
+      // resultに格納されている配列を展開して、todoのaddressを引数として渡す
       await Promise.all(
         result.map(async (number) => {
-          // ③ コントラクトのtodosを呼び出す
+          // コントラクトのtodosを呼び出す
           return await contract.methods.todoList(number).call();
         })
       ).then((value) => {
-        // ④ 取得した値を使って、stateを変更する
+        // 取得した値を使って、stateを変更する
         setTodos(value);
       });
     };
@@ -59,39 +58,33 @@ const Home: NextPage = () => {
   }, [contract]);
 
   // todoを追加
-  const handleSubmit: ComponentProps<"form">["onSubmit"] = (e) => {
+  const handleSubmit: ComponentProps<"form">["onSubmit"] = async (e) => {
     e.preventDefault();
-    const text = e.currentTarget.text.value;
+    const text: Value["task"] = e.currentTarget.text.value;
+    const accounts = await web3.eth.getAccounts();
 
-    const addTodo: (text: Value["task"]) => Promise<void> = async (text) => {
-      const accounts = await web3.eth.getAccounts();
+    // コントラクトのTodoCreateを呼び出してTodoを追加する
+    await contract.methods.createTodo(text).send({
+      from: accounts[0],
+      gas: "1000000",
+    });
 
-      // コントラクトのTodoCreateを呼び出してTodoを追加する
-      await contract.methods.createTodo(text).send({
-        from: accounts[0],
-        gas: "1000000",
-      });
-      // トランザクション完了後、ページリロード
-      window.location.reload();
-    };
-    addTodo(text);
+    // トランザクション完了後にページリロード
+    window.location.reload();
     e.currentTarget.reset();
   };
 
   // flagを変更(タスクを終了)
-  const toggleIsDone = (id: any) => {
-    const doneTodo: (id: Value["taskid"]) => Promise<void> = async (id) => {
-      const accounts = await web3.eth.getAccounts();
+  const toggleIsDone: (id: Value["taskid"]) => Promise<void> = async (id) => {
+    const accounts = await web3.eth.getAccounts();
 
-      // コントラクトのTodoCreateを呼び出してTodoを追加する
-      await contract.methods.TodoRemove(id).send({
-        from: accounts[0],
-        gas: "1000000",
-      });
-      // トランザクション完了後、ページリロード
-      window.location.reload();
-    };
-    doneTodo(id);
+    // コントラクトのTodoCreateを呼び出してTodoを追加する
+    await contract.methods.TodoRemove(id).send({
+      from: accounts[0],
+      gas: "1000000",
+    });
+    // トランザクション完了後にページリロード
+    window.location.reload();
   };
   console.log(todos);
 
@@ -105,24 +98,25 @@ const Home: NextPage = () => {
           {/* todo一覧 */}
           <h3 className="mb-10 text-3xl">Todo一覧</h3>
           {todos.map((todo) =>
-            todo?.flag ? (
-              <div key={todo?.taskid} className="py-4 px-4">
+            todo.flag ? (
+              <div key={todo.taskid} className="py-4 px-4">
                 <label style={{ fontSize: "2rem" }}>
                   <button
                     className="p-4 text-white bg-gray-700 rounded"
-                    onClick={() => toggleIsDone(todo?.taskid)}
+                    onClick={() => toggleIsDone(todo.taskid)}
                   >
                     Done
                   </button>
-                  {todo?.task}
+                  {todo.task}
                 </label>
               </div>
             ) : null
           )}
         </div>
-
+        {/* todo一覧 */}
+        {/* Todo追加 */}
         <div className="w-full md:w-1/3">
-          <h2 className="mb-10 text-3xl">todo追加</h2>
+          <h2 className="mb-10 text-3xl">Todo追加</h2>
           <form onSubmit={handleSubmit}>
             <input
               type="text"
@@ -132,10 +126,11 @@ const Home: NextPage = () => {
               className="border-gray-700 border-solid border-2 block mb-5 w-full md:w-4/5 max-h-56"
             />
             <button className="text-white bg-gray-700 hover:bg-gray-400 px-8 py-4 rounded">
-              submit
+              Submit
             </button>
           </form>
         </div>
+        {/* Todo追加 */}
       </main>
     </div>
   );
