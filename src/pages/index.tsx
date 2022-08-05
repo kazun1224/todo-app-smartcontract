@@ -90,48 +90,58 @@ const Home: NextPage = () => {
 
   return (
     <div className="h-screen">
-      <header className="bg-gray-500 py-6">
-        <h1 className="text-white text-center text-5xl">TODO App</h1>
+      <header className="bg-cyan-800 py-6">
+        <h1 className="text-white text-center text-3xl font-bold">TODO APP</h1>
       </header>
-      <main className="max-w-screen-xl px-5 md:px-24 md:flex py-20 md:py-36 mx-auto">
-        <div className="w-full py-10">
+      <main className="max-w-screen-xl px-5 md:px-24  py-10 md:py-20 mx-auto md:flex min-h-screen  w-full gap-10">
+        <div className="w-full">
           {/* todo一覧 */}
-          <h3 className="mb-10 text-3xl">Todo一覧</h3>
-          {todos.map((todo) =>
-            todo.flag ? (
-              <div key={todo.taskid} className="py-4 px-4">
-                <label style={{ fontSize: "2rem" }}>
-                  <button
-                    className="p-4 text-white bg-gray-700 rounded"
-                    onClick={() => toggleIsDone(todo.taskid)}
-                  >
-                    Done
-                  </button>
-                  {todo.task}
-                </label>
-              </div>
-            ) : null
-          )}
+          <h3 className="mb-5 text-2xl font-bold">Todo一覧</h3>
+          <div className="p-2 mb-10 md:mb-0">
+            {todos.map((todo) =>
+              todo.flag ? (
+                <div
+                  key={todo.taskid}
+                  className="w-full border-cyan-800 border-solid border-2 rounded mb-8 md:mb-4 last-of-type:mb-0"
+                >
+                  <label className="">
+                    <button
+                      className="p-2 text-white bg-cyan-800 hover:bg-cyan-600"
+                      onClick={() => toggleIsDone(todo.taskid)}
+                    >
+                      Done
+                    </button>
+                    <span className="p-2">{todo.task}</span>
+                  </label>
+                </div>
+              ) : null
+            )}
+          </div>
         </div>
         {/* todo一覧 */}
         {/* Todo追加 */}
         <div className="w-full md:w-1/3">
-          <h2 className="mb-10 text-3xl">Todo追加</h2>
-          <form onSubmit={handleSubmit}>
-            <input
-              type="text"
-              name="text"
-              autoComplete="off"
-              required
-              className="border-gray-700 border-solid border-2 block mb-5 w-full md:w-4/5 max-h-56"
-            />
-            <button className="text-white bg-gray-700 hover:bg-gray-400 px-8 py-4 rounded">
-              Submit
-            </button>
-          </form>
+          <h2 className="mb-5 text-2xl font-bold">Todo追加</h2>
+          <div className="p-2">
+            <form onSubmit={handleSubmit}>
+              <input
+                type="text"
+                name="text"
+                autoComplete="off"
+                required
+                className="border-cyan-800 border-solid border-2 p-2 mb-4 block"
+              />
+              <button className="text-white bg-cyan-800 hover:bg-cyan-600 px-8 py-4 rounded">
+                Submit
+              </button>
+            </form>
+          </div>
         </div>
         {/* Todo追加 */}
       </main>
+      <footer className="bg-cyan-800 py-6">
+        <p className="text-white text-center">Todo Dapps</p>
+      </footer>
     </div>
   );
 };
