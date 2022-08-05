@@ -1,36 +1,7 @@
 import type { NextPage } from "next";
 import { ComponentProps, useEffect, useState } from "react";
-import Web3 from "web3";
-import { AbiItem } from "web3-utils";
-import TodoAppContract from "../../build/contracts/TodoApp.json";
-import { TodoApp } from "../../types/abi";
-
-type Value = {
-  taskid: string;
-  task: string;
-  flag: boolean;
-  0: string;
-  1: string;
-  2: boolean;
-};
-
-// プロバイダの設定
-const web3: Web3 = new Web3(
-  new Web3.providers.HttpProvider(`http://127.0.0.1:7545`)
-);
-
-// コントラクトのアドレス
-// デプロイしたcontractのaddressを入れる
-/////////////////////////////////////////////////////////////////////// GANACHE_TODO_APP_CONTRACT_ADDRESSの文字列を入れるとerrorが消える
-const address = "";
-
-// buildで生成されたJSONファイルを任意の名前でインポートする
-// JSONファイルからABIを抽出
-const ABI = TodoAppContract.abi as any as AbiItem;
-
-// コントラクトのインスタンス
-// 以下コードでコントラクトのインスタンスを生成している。コントラクトに関する操作はこのインスタンスを通して行う
-const contract = new web3.eth.Contract(ABI, address) as unknown as TodoApp;
+import { Value } from "../types/todo";
+import { contract, web3 } from "../utils/blockchain";
 
 const Home: NextPage = () => {
   const [todos, setTodos] = useState<Value[]>([]);
@@ -71,7 +42,6 @@ const Home: NextPage = () => {
 
     // トランザクション完了後にページリロード
     window.location.reload();
-    e.currentTarget.reset();
   };
 
   // flagを変更(タスクを終了)
@@ -86,7 +56,6 @@ const Home: NextPage = () => {
     // トランザクション完了後にページリロード
     window.location.reload();
   };
-  console.log(todos);
 
   return (
     <div className="h-screen">
